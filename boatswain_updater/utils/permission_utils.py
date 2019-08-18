@@ -23,6 +23,9 @@ import sys
 
 from boatswain_updater.utils import sys_utils
 
+SEE_MASK_NOCLOSEPROCESS = 0x00000040
+SEE_MASK_NO_CONSOLE = 0x00008000
+
 
 def locationIsWritable(path):
     if os.path.isdir(path):
@@ -68,8 +71,8 @@ def quoteAppleScript(string):
 def runAsAdmin(argv):
     commands = []
     if sys_utils.isMac():
-        commands.append(["osascript", "-e", "do shell script " +
-                         quoteAppleScript(quoteShell(argv)) + " with administrator privileges"])
+        commands.append(["osascript", "-e",
+                         "do shell script " + quoteAppleScript(quoteShell(argv)) + " with administrator privileges"])
     elif sys_utils.isLinux():
         if os.environ.get("DISPLAY"):
             commands.append(["pkexec"] + argv)
@@ -99,13 +102,10 @@ def runWindowsCommandAsAdmin(executor, argv, show_console=True):
     from ctypes.wintypes import HANDLE, BOOL, DWORD, HWND, HINSTANCE, HKEY
     from ctypes import windll
 
-    SEE_MASK_NOCLOSEPROCESS = 0x00000040
-    SEE_MASK_NO_CONSOLE = 0x00008000
-
     # Type definitions
 
-    PHANDLE = ctypes.POINTER(HANDLE)
-    PDWORD = ctypes.POINTER(DWORD)
+    # PHANDLE = ctypes.POINTER(HANDLE)
+    # PDWORD = ctypes.POINTER(DWORD)
 
     class ShellExecuteInfo(ctypes.Structure):
         _fields_ = [
@@ -131,21 +131,21 @@ def runWindowsCommandAsAdmin(executor, argv, show_console=True):
             for field_name, field_value in kw.items():
                 setattr(self, field_name, field_value)
 
-    PShellExecuteInfo = POINTER(ShellExecuteInfo)
+    p_shell_execute_info = POINTER(ShellExecuteInfo)
 
     # Function definitions
 
-    ShellExecuteEx = windll.shell32.ShellExecuteExA
-    ShellExecuteEx.argtypes = (PShellExecuteInfo,)
-    ShellExecuteEx.restype = BOOL
+    shell_execute_ex = windll.shell32.ShellExecuteExA
+    shell_execute_ex.argtypes = (p_shell_execute_info,)
+    shell_execute_ex.restype = BOOL
 
-    WaitForSingleObject = windll.kernel32.WaitForSingleObject
-    WaitForSingleObject.argtypes = (HANDLE, DWORD)
-    WaitForSingleObject.restype = DWORD
+    wait_for_single_object = windll.kernel32.WaitForSingleObject
+    wait_for_single_object.argtypes = (HANDLE, DWORD)
+    wait_for_single_object.restype = DWORD
 
-    CloseHandle = windll.kernel32.CloseHandle
-    CloseHandle.argtypes = (HANDLE,)
-    CloseHandle.restype = BOOL
+    close_handle = windll.kernel32.CloseHandle
+    close_handle.argtypes = (HANDLE,)
+    close_handle.restype = BOOL
 
     params = ShellExecuteInfo(
         fMask=SEE_MASK_NOCLOSEPROCESS | SEE_MASK_NO_CONSOLE,
@@ -155,15 +155,15 @@ def runWindowsCommandAsAdmin(executor, argv, show_console=True):
         lpParameters=subprocess.list2cmdline(argv).encode('cp1252'),
         nShow=int(show_console))
 
-    if not ShellExecuteEx(ctypes.byref(params)):
+    if not shell_execute_ex(ctypes.byref(params)):
         raise ctypes.WinError()
 
     handle = params.hProcess
     ret = DWORD()
-    WaitForSingleObject(handle, -1)
+    wait_for_single_object(handle, -1)
 
     if windll.kernel32.GetExitCodeProcess(handle, ctypes.byref(ret)) == 0:
         raise ctypes.WinError()
 
-    CloseHandle(handle)
+    close_handle(handle)
     return ret.value

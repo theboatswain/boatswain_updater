@@ -103,4 +103,3 @@ def copyFolderWithRoot(update_app_path: str, original_app: AppToUpdate):
     finally:
         os.close(fd)
     raise InstallationFailedException()
-

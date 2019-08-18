@@ -22,7 +22,6 @@ from boatswain_updater.utils.custom_ui import BQSizePolicy
 
 
 class UpdaterUi:
-
     template = 'UpdateUi'
 
     def __init__(self, dialog) -> None:
