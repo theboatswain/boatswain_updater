@@ -60,14 +60,23 @@ class Feed(QObject):
         return self.all_releases
 
     def load(self):
-        releases = requests.get(self.url)
-        self.all_releases.clear()
-        for rls in releases.json():
-            self.all_releases.append(Release.fromJson(rls))
+        worker = Worker(self.makeLoadRequest, self.url)
+        worker.signals.result.connect(self.onLoadFinished)
+        worker.signals.error.connect(self.handleDownloadError)
+        threadpool.start(worker)
 
+    def onLoadFinished(self, releases):
+        self.all_releases = releases
         self.all_releases.sort(key=functools.cmp_to_key(release_utils.compare_release))
         self.__feed_ready = True
         self.ready.emit()
+
+    def makeLoadRequest(self, url, progress_callback):
+        releases = requests.get(url)
+        result = []
+        for rls in releases.json():
+            result.append(Release.fromJson(rls))
+        return result
 
     def getDownloadFile(self) -> str:
         return self.download_file
