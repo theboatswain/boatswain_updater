@@ -177,7 +177,7 @@ class Updater(QObject):
         self.dialog.setMinimumSize(QSize(500, 120))
         self.dialog.resize(500, 120)
         show_widgets = [self.ui.main_container, self.ui.label_icon, self.ui.progress_bar, self.ui.label_downloading,
-                        self.ui.button_cancel_loading]
+                        self.ui.button_cancel_loading, self.ui.progress_label]
         for widget in show_widgets:
             widget.show()
 
@@ -191,13 +191,12 @@ class Updater(QObject):
         self.dialog.setWindowTitle(self.tr("Updating") + " %s…" % QApplication.applicationName())
         self.dialog.setMinimumSize(QSize(500, 120))
         self.dialog.resize(500, 120)
-        show_widgets = [self.ui.main_container, self.ui.label_icon, self.ui.progress_bar,
+        show_widgets = [self.ui.main_container, self.ui.label_icon,
                         self.ui.button_install_and_relaunch, self.ui.label_install_and_relaunch]
         for widget in show_widgets:
             widget.show()
 
-        self.ui.progress_bar.setMaximum(0)
-        self.ui.progress_bar.setValue(0)
+        self.updateProgressBar(self._latest_release.download_size, self._latest_release.download_size)
 
         self.ui.button_install_and_relaunch.setEnabled(True)
         self.ui.button_install_and_relaunch.setFocus()
@@ -232,7 +231,7 @@ class Updater(QObject):
                           self.ui.label_headline_unable_update, self.ui.label_info_unable_update,
                           self.ui.label_changelog, self.ui.progress_bar, self.ui.button_skip,
                           self.ui.button_cancel, self.ui.button_cancel_loading, self.ui.button_confirm,
-                          self.ui.button_install]
+                          self.ui.button_install, self.ui.progress_label]
 
         for widget in hidden_widgets:
             widget.hide()
@@ -251,3 +250,7 @@ class Updater(QObject):
         self.ui.progress_bar.show()
         self.ui.progress_bar.setMaximum(bytes_total / 1024)
         self.ui.progress_bar.setValue(bytes_received / 1024)
+        self.ui.progress_label.show()
+        mb_received = bytes_received / 1024 / 1024
+        mb_total = bytes_total / 1024 / 1024
+        self.ui.progress_label.setText("%.2f MB of %.2f MB" % (mb_received, mb_total))

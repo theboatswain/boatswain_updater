@@ -97,6 +97,8 @@ class UpdaterUi:
         self.horizontal_layout.setSpacing(12)
         self.button_skip = QtWidgets.QPushButton(self.button_container)
         self.horizontal_layout.addWidget(self.button_skip)
+        self.progress_label = QtWidgets.QLabel(self.button_container)
+        self.horizontal_layout.addWidget(self.progress_label)
         spacer_item1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontal_layout.addItem(spacer_item1)
         self.button_cancel = QtWidgets.QPushButton(self.button_container)
