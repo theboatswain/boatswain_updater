@@ -89,8 +89,8 @@ class Updater(QObject):
         if self._silent:
             return
         self.resetUi()
-        self.dialog.setMinimumSize(QSize(400, 120))
-        self.dialog.resize(400, 120)
+        self.dialog.setMinimumSize(QSize(500, 120))
+        self.dialog.resize(500, 120)
         show_widgets = [self.ui.label_info_no_updates, self.ui.button_confirm, self.ui.label_headline_no_updates,
                         self.ui.main_container, self.ui.label_icon]
         for widget in show_widgets:
@@ -214,8 +214,8 @@ class Updater(QObject):
 
     def setupInstallFailedUi(self):
         self.resetUi()
-        self.dialog.setMinimumSize(QSize(400, 120))
-        self.dialog.resize(400, 120)
+        self.dialog.setMinimumSize(QSize(500, 120))
+        self.dialog.resize(500, 120)
         show_widgets = [self.ui.main_container, self.ui.label_icon, self.ui.label_info_unable_update,
                         self.ui.label_headline_unable_update]
         for widget in show_widgets:
