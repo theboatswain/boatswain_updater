@@ -75,7 +75,9 @@ class Feed(QObject):
         releases = requests.get(url)
         result = []
         for rls in releases.json():
-            result.append(Release.fromJson(rls))
+            new_release = Release.fromJson(rls)
+            if new_release.download_size:
+                result.append(new_release)
         return result
 
     def getDownloadFile(self) -> str:
