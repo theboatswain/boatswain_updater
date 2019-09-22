@@ -28,6 +28,7 @@ from boatswain_updater.services import setting_service, core
 from boatswain_updater.updater_ui import UpdaterUi
 from boatswain_updater.utils import pyqt_utils, release_utils
 from boatswain_updater.utils.constants import SKIP_RELEASE
+from boatswain_updater.utils.pyqt_utils import rt
 
 
 class Updater(QObject):
@@ -89,8 +90,8 @@ class Updater(QObject):
         if self._silent:
             return
         self.resetUi()
-        self.dialog.setMinimumSize(QSize(500, 120))
-        self.dialog.resize(500, 120)
+        self.dialog.setMinimumSize(QSize(rt(500), rt(120)))
+        self.dialog.resize(rt(500), rt(120))
         show_widgets = [self.ui.label_info_no_updates, self.ui.button_confirm, self.ui.label_headline_no_updates,
                         self.ui.main_container, self.ui.label_icon]
         for widget in show_widgets:
@@ -107,8 +108,8 @@ class Updater(QObject):
     def setupUpdateUi(self):
         self.resetUi()
         self.ui.label_icon.show()
-        self.dialog.setMinimumSize(QSize(346 * 2, 346))
-        self.dialog.resize(346 * 2, 346)
+        self.dialog.setMinimumSize(QSize(rt(346 * 2), rt(346)))
+        self.dialog.resize(rt(346 * 2), rt(346))
         show_widgets = [self.ui.main_container, self.ui.label_changelog, self.ui.button_skip,
                         self.ui.button_cancel, self.ui.button_install, self.ui.label_info, self.ui.release_notes,
                         self.ui.label_headline]
@@ -161,8 +162,8 @@ class Updater(QObject):
         if self._silent:
             return
         self.resetUi()
-        self.dialog.setMinimumSize(QSize(500, 120))
-        self.dialog.resize(500, 120)
+        self.dialog.setMinimumSize(QSize(rt(500), rt(120)))
+        self.dialog.resize(rt(500), rt(120))
         self.ui.main_container.show()
         self.ui.label_headline_loading.show()
         self.ui.progress_bar.show()
@@ -174,8 +175,8 @@ class Updater(QObject):
     def setupDownloadingUi(self):
         self.resetUi()
         self.dialog.setWindowTitle(self.tr("Updating") + " %s…" % QApplication.applicationName())
-        self.dialog.setMinimumSize(QSize(500, 120))
-        self.dialog.resize(500, 120)
+        self.dialog.setMinimumSize(QSize(rt(500), rt(120)))
+        self.dialog.resize(rt(500), rt(120))
         show_widgets = [self.ui.main_container, self.ui.label_icon, self.ui.progress_bar, self.ui.label_downloading,
                         self.ui.button_cancel_loading, self.ui.progress_label]
         for widget in show_widgets:
@@ -189,8 +190,8 @@ class Updater(QObject):
     def setupInstallingUi(self):
         self.resetUi()
         self.dialog.setWindowTitle(self.tr("Updating") + " %s…" % QApplication.applicationName())
-        self.dialog.setMinimumSize(QSize(500, 120))
-        self.dialog.resize(500, 120)
+        self.dialog.setMinimumSize(QSize(rt(500), rt(120)))
+        self.dialog.resize(rt(500), rt(120))
         show_widgets = [self.ui.main_container, self.ui.label_icon,
                         self.ui.button_install_and_relaunch, self.ui.label_install_and_relaunch]
         for widget in show_widgets:
@@ -214,8 +215,8 @@ class Updater(QObject):
 
     def setupInstallFailedUi(self):
         self.resetUi()
-        self.dialog.setMinimumSize(QSize(500, 120))
-        self.dialog.resize(500, 120)
+        self.dialog.setMinimumSize(QSize(rt(500), rt(120)))
+        self.dialog.resize(rt(500), rt(120))
         show_widgets = [self.ui.main_container, self.ui.label_icon, self.ui.label_info_unable_update,
                         self.ui.label_headline_unable_update]
         for widget in show_widgets:

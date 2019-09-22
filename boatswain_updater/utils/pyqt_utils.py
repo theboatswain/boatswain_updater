@@ -18,8 +18,12 @@ import logging
 from contextlib import closing
 
 from PyQt5.QtCore import QFile
+from PyQt5.QtGui import QGuiApplication
 
 logger = logging.getLogger(__name__)
+ref_dpi = 72
+ref_height = 900
+ref_width = 1440
 
 
 def disconnectAllSignals(widget):
@@ -36,3 +40,20 @@ def defrostAndSaveInto(filename, destination):
             frozen_data = bytes(frozen_file.readAll())
             with open(destination, 'wb') as the_file:
                 the_file.write(frozen_data)
+
+
+def rt(pixel):
+    rect = QGuiApplication.primaryScreen().geometry()
+    height = min(rect.width(), rect.height())
+    width = max(rect.width(), rect.height())
+    ratio = min(height / ref_height, width / ref_width)
+    return round(pixel * ratio)
+
+
+def applyFontRatio(point):
+    dpi = QGuiApplication.primaryScreen().logicalDotsPerInch()
+    rect = QGuiApplication.primaryScreen().geometry()
+    height = min(rect.width(), rect.height())
+    width = max(rect.width(), rect.height())
+    ratio_font = min(height * ref_dpi / (dpi * ref_height), width * ref_dpi / (dpi * ref_width))
+    return round(point * ratio_font)

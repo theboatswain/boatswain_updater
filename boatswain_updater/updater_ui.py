@@ -19,26 +19,27 @@ from PyQt5 import QtCore, QtGui, QtWidgets
 from PyQt5.QtCore import QSize, Qt
 
 from boatswain_updater.utils.custom_ui import BQSizePolicy
+from boatswain_updater.utils.pyqt_utils import rt, applyFontRatio
 
 
 class UpdaterUi:
     template = 'UpdateUi'
 
     def __init__(self, dialog) -> None:
-        dialog.setMinimumSize(QSize(400, 120))
+        dialog.setMinimumSize(QSize(rt(400), rt(120)))
         dialog.setModal(True)
         self.main_layout = QtWidgets.QVBoxLayout(dialog)
-        self.main_layout.setContentsMargins(20, 11, 11, 11)
+        self.main_layout.setContentsMargins(rt(20), rt(11), rt(11), rt(11))
         self.main_layout.setSpacing(0)
         self.main_container = QtWidgets.QWidget(dialog)
         self.grid_layout = QtWidgets.QGridLayout(self.main_container)
-        self.grid_layout.setContentsMargins(0, 6, 0, 0)
+        self.grid_layout.setContentsMargins(0, rt(6), 0, 0)
         self.grid_layout.setHorizontalSpacing(24)
         self.grid_layout.setVerticalSpacing(6)
         self.label_headline = QtWidgets.QLabel(self.main_container)
         font = QtGui.QFont()
         font.setBold(True)
-        font.setWeight(105)
+        font.setWeight(applyFontRatio(105))
         self.label_headline.setFont(font)
         self.grid_layout.addWidget(self.label_headline, 0, 2, 1, 1)
 
@@ -94,12 +95,13 @@ class UpdaterUi:
         self.button_container.setSizePolicy(BQSizePolicy(height=QtWidgets.QSizePolicy.Minimum))
         self.horizontal_layout = QtWidgets.QHBoxLayout(self.button_container)
         self.horizontal_layout.setContentsMargins(0, 0, 0, 0)
-        self.horizontal_layout.setSpacing(12)
+        self.horizontal_layout.setSpacing(rt(12))
         self.button_skip = QtWidgets.QPushButton(self.button_container)
         self.horizontal_layout.addWidget(self.button_skip)
         self.progress_label = QtWidgets.QLabel(self.button_container)
         self.horizontal_layout.addWidget(self.progress_label)
-        spacer_item1 = QtWidgets.QSpacerItem(40, 20, QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
+        spacer_item1 = QtWidgets.QSpacerItem(rt(40), rt(20),
+                                             QtWidgets.QSizePolicy.Expanding, QtWidgets.QSizePolicy.Minimum)
         self.horizontal_layout.addItem(spacer_item1)
         self.button_cancel = QtWidgets.QPushButton(self.button_container)
         self.horizontal_layout.addWidget(self.button_cancel)
