@@ -85,10 +85,10 @@ def copyFolderWithRoot(update_app_path: str, original_app: AppToUpdate):
     """
     if sys_utils.isMac() or sys_utils.isLinux():
         fd, installer = tempfile.mkstemp(suffix='.sh')
-        pyqt_utils.defrostAndSaveInto(resources_utils.get_resource('installers/posix/installer.sh'), installer)
+        pyqt_utils.defrostAndSaveInto(resources_utils.getResource('installers/posix/installer.sh'), installer)
     else:
         fd, installer = tempfile.mkstemp(suffix='.bat')
-        pyqt_utils.defrostAndSaveInto(resources_utils.get_resource('installers/windows/installer.bat'), installer)
+        pyqt_utils.defrostAndSaveInto(resources_utils.getResource('installers/windows/installer.bat'), installer)
 
     os.chmod(installer, 0o755)  # make executable
     command = [installer, update_app_path, original_app.folder]

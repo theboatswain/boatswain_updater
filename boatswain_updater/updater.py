@@ -14,7 +14,7 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
-
+import logging
 from typing import List
 
 from PyQt5.QtCore import pyqtSignal, QCoreApplication, QSize, QObject
@@ -30,6 +30,8 @@ from boatswain_updater.utils import pyqt_utils, release_utils
 from boatswain_updater.utils.constants import SKIP_RELEASE
 from boatswain_updater.utils.pyqt_utils import rt
 
+logger = logging.getLogger(__name__)
+
 
 class Updater(QObject):
     installed = pyqtSignal()
@@ -37,6 +39,7 @@ class Updater(QObject):
     _releases: List[Release] = []
     _updates: List[Release] = []
     _silent = False
+    _auto_install = False
 
     def __init__(self, parent, feed: Feed) -> None:
         super().__init__(parent)
@@ -53,16 +56,18 @@ class Updater(QObject):
         self.dialog.move(x, y)
         self.dialog.show()
 
-    def checkForUpdate(self, silent=False):
+    def checkForUpdate(self, silent=False, auto_install=False):
         """
         Check for new update, if yes, then show the update confirmation window
         :param silent: whether or not we show the loading window
         """
         self._silent = silent
+        self._auto_install = auto_install
         if not silent:
             self._showDialog()
         self.setupLoadingUi()
         self.feed.ready.connect(self.handleFeedReady)
+        logger.info("Starting to fetch update info...")
         self.feed.load()
 
     def handleFeedReady(self):
@@ -73,14 +78,17 @@ class Updater(QObject):
 
         if len(self._updates) == 0:
             self.setupNoUpdatesUi()
+            logger.info("No release found.")
             return
 
         latest_version = self._latest_release.getVersion()
         skip_release = setting_service.getSettingsValue(SKIP_RELEASE) == latest_version
         if latest_version:
             self.setupUpdateUi()
-            if self._silent and not skip_release:
+            if self._silent and not skip_release and not self._auto_install:
                 self._showDialog()
+            elif not skip_release and self._auto_install:
+                self.onButtonInstall()
 
     def setIcon(self, pixmap: QPixmap):
         self.ui.label_icon.setPixmap(pixmap)
@@ -102,6 +110,7 @@ class Updater(QObject):
         self.dialog.adjustSize()
 
     def startDownload(self):
+        logger.info("Starting to download release %s..." % self._latest_release.version)
         self.feed.downloadRelease(self._latest_release)
         self.disableButtons(True)
 
@@ -203,8 +212,11 @@ class Updater(QObject):
         self.ui.button_install_and_relaunch.setFocus()
         self.ui.button_install_and_relaunch.clicked.connect(self.installUpdate)
         self.dialog.adjustSize()
+        if self._auto_install:
+            self.installUpdate()
 
     def installUpdate(self):
+        logger.info("Starting to install update...")
         file = self.feed.getDownloadFile()
         try:
             core.installUpdate(file)

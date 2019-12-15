@@ -1,0 +1,9 @@
+INFO:boatswain_updater.updater:Starting to fetch update info...
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): api.github.com:443
+DEBUG:urllib3.connectionpool:https://api.github.com:443 "GET /repos/theboatswain/boatswain_updater/releases HTTP/1.1" 200 2
+INFO:boatswain_updater.updater:No release found.
+INFO:boatswain_updater.utils.pyqt_utils:Attempting to defrost :/certifi/cacert.pem and save into cacert.pem
+INFO:boatswain_updater.updater:Starting to fetch update info...
+DEBUG:urllib3.connectionpool:Starting new HTTPS connection (1): api.github.com:443
+DEBUG:urllib3.connectionpool:https://api.github.com:443 "GET /repos/theboatswain/boatswain_updater/releases HTTP/1.1" 200 2
+INFO:boatswain_updater.updater:No release found.
