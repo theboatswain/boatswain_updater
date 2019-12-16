@@ -21,16 +21,19 @@ from setuptools import find_packages
 setup(name='boatswain_updater',
       version='1.0.0',
       packages=find_packages(exclude=("venv*",)),
+      author='Manh Tu VU',
+      author_email='glmanhtu@gmail.com',
       install_requires=[
           'PyQt5==5.13.0',
           'semantic_version==2.6.0',
           'requests'
       ],
+      classifiers=[
+          "License :: OSI Approved :: GNU General Public License v3 or later (GPLv3+)",
+          "Programming Language :: Python :: 3",
+          "Programming Language :: Python :: 3.7",
+      ],
       package_data={
           '': ['*.sh', '*.bat']
-      },
-      entry_points={
-          'gui_scripts': [
-              'boatswain = boatswain:main'
-          ]},
+      }
       )
