@@ -98,6 +98,8 @@ def copyFolderWithRoot(update_app_path: str, original_app: AppToUpdate):
         res_code = permission_utils.runAsAdmin(command)
         if res_code == 0:
             return
+        else:
+            logger.error("Exception occurred, exit code: %d" % res_code)
     except OSError as e:
         logger.error("Exception occurred, rolling back to the earlier backed up version.\n Exception: %s", e)
     finally:

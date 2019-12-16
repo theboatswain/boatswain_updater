@@ -51,7 +51,7 @@ def onApplicationInstalled():
 
 def run():
     QApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
-    QCoreApplication.setApplicationVersion("1.0.0")
+    QCoreApplication.setApplicationVersion("0.0.0")
     QCoreApplication.setApplicationName("BoatswainUpdater")
     app = QApplication(sys.argv)
 
