@@ -8,13 +8,8 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLa
 from boatswain_updater.utils import pyqt_utils
 from boatswain_updater.utils.custom_ui import BQSizePolicy
 
-logging.basicConfig(filename='/tmp/boatswain.log', level=logging.DEBUG)
-
 from boatswain_updater.models.feed import Feed
 from boatswain_updater.updater import Updater
-
-
-PEM_FILE = "/tmp/cacert.pem"
 
 
 class MainWindow(QMainWindow):
@@ -68,4 +63,6 @@ def run():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(filename='/tmp/boatswain.log', level=logging.DEBUG)
+    PEM_FILE = "/tmp/cacert.pem"
     run()
