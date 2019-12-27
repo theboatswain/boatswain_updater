@@ -40,7 +40,7 @@ class Release:
         if sys_utils.isMac():
             plf = 'macOS'
         elif sys_utils.isWin():
-            plf = 'windows'
+            plf = 'win32-portable'
         else:
             plf = 'unix'
 

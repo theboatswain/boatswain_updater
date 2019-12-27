@@ -1,4 +1,5 @@
 import logging
+logging.basicConfig(filename='boatswain.log', level=logging.DEBUG)
 import os
 import sys
 
@@ -11,6 +12,8 @@ from boatswain_updater.utils.custom_ui import BQSizePolicy
 from boatswain_updater.models.feed import Feed
 from boatswain_updater.updater import Updater
 
+
+PEM_FILE = "cacert.pem"
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -56,13 +59,11 @@ def run():
     feed = Feed('theboatswain/boatswain_updater')
     update_dialog = Updater(window, feed)
     update_dialog.installed.connect(onApplicationInstalled)
-    update_dialog.checkForUpdate(silent=False, auto_install=True)
+    update_dialog.checkForUpdate(silent=False, auto_install=False)
     window.show()
 
     sys.exit(app.exec_())
 
 
 if __name__ == '__main__':
-    logging.basicConfig(filename='/tmp/boatswain.log', level=logging.DEBUG)
-    PEM_FILE = "/tmp/cacert.pem"
     run()
