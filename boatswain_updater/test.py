@@ -1,6 +1,7 @@
 import logging
 import os
 import sys
+import tempfile
 
 from PyQt5.QtCore import Qt, QCoreApplication
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QVBoxLayout, QLabel
@@ -12,7 +13,8 @@ from boatswain_updater.models.feed import Feed
 from boatswain_updater.updater import Updater
 
 
-PEM_FILE = "cacert.pem"
+TMP_DIR = tempfile.gettempdir()
+PEM_FILE = os.path.join(TMP_DIR, "cacert.pem")
 
 
 class MainWindow(QMainWindow):
@@ -48,9 +50,10 @@ def onApplicationInstalled():
 
 
 def run():
-    logging.basicConfig(filename='boatswain.log', level=logging.DEBUG)
+    print("TMP dir: %s" % TMP_DIR)
+    logging.basicConfig(filename=os.path.join(TMP_DIR, 'boatswain-updater.log'), level=logging.DEBUG)
     QApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
-    QCoreApplication.setApplicationVersion("0.0.0")
+    QCoreApplication.setApplicationVersion("1.0.0")
     QCoreApplication.setApplicationName("BoatswainUpdater")
     app = QApplication(sys.argv)
 
