@@ -58,6 +58,15 @@ def installUpdate(update_file: str):
         copyFolderWithRoot(update_app_path, original_app)
 
 
+def cleanupPreviousVersion():
+    if sys_utils.isWin():
+        original_app = AppToUpdate()
+        files = os.listdir(original_app.folder)
+        for f in files:
+            if f.endswith(".bak"):
+                os.unlink(os.path.join(original_app.folder, f))
+
+
 def verifyUpdateStructure(update_app_path: str, original_app: AppToUpdate):
     relative_exe_location = original_app.getRelativeExecutable()
     return os.path.isfile(os.path.join(update_app_path, relative_exe_location))
@@ -70,9 +79,12 @@ def copyFolderNoRoot(update_app_path: str, original_app: AppToUpdate):
     """
     logger.info("Starting to move files from %s -> %s" % (update_app_path, original_app.folder))
     try:
-        shutil.rmtree(original_app.folder)
+        if not sys_utils.isWin():
+            shutil.rmtree(original_app.folder)
         files = os.listdir(update_app_path)
         for f in files:
+            if sys_utils.isWin() and os.path.isfile(os.path.join(original_app.folder, f)):
+                os.rename(os.path.join(original_app.folder, f), os.path.join(original_app.folder, f) + ".bak")
             shutil.move(os.path.join(update_app_path, f), os.path.join(original_app.folder, f))
     except OSError as e:
         logger.error("Exception occurred, rolling back to the earlier backed up version.\n Exception: %s", e)

@@ -48,6 +48,7 @@ class Updater(QObject):
         self.ui = UpdaterUi(self.dialog)
         self.dialog.ui = self.ui
         self.feed = feed
+        core.cleanupPreviousVersion()
 
     def _showDialog(self):
         screen_geometry = QApplication.desktop().screenGeometry()

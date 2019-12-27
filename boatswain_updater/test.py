@@ -1,5 +1,4 @@
 import logging
-logging.basicConfig(filename='boatswain.log', level=logging.DEBUG)
 import os
 import sys
 
@@ -14,6 +13,7 @@ from boatswain_updater.updater import Updater
 
 
 PEM_FILE = "cacert.pem"
+
 
 class MainWindow(QMainWindow):
     def __init__(self):
@@ -66,4 +66,5 @@ def run():
 
 
 if __name__ == '__main__':
+    logging.basicConfig(filename='boatswain.log', level=logging.DEBUG)
     run()
