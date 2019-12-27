@@ -44,7 +44,10 @@ def installUpdate(update_file: str):
     zip_file.close()
     original_app = AppToUpdate()
 
-    update_app_path = os.path.join(extract_to, os.path.basename(original_app.folder))
+    if sys_utils.isMac():
+        update_app_path = os.path.join(extract_to, os.path.basename(original_app.folder))
+    else:
+        update_app_path = extract_to
 
     logger.info('Update data path: ' + update_app_path)
     if not verifyUpdateStructure(update_app_path, original_app):

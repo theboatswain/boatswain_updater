@@ -88,8 +88,8 @@ class Feed(QObject):
         worker.signals.result.connect(self.handleDownloadFinished)
         worker.signals.progress.connect(self.handleDownloadProgress)
         worker.signals.error.connect(self.handleDownloadError)
-        threadpool.start(worker)
         self.last_release = rls
+        threadpool.start(worker)
 
     def makeDownloadRequest(self, url: str, progress_callback):
         file_name = QUrl(self.last_release.download_url).fileName()
