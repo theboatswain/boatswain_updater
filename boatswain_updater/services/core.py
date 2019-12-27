@@ -53,6 +53,7 @@ def installUpdate(update_file: str):
         raise ReleaseFolderStructureIncorrect()
 
     if original_app.hasPermission():
+        cleanupPreviousVersion()
         copyFolderNoRoot(update_app_path, original_app)
     else:
         copyFolderWithRoot(update_app_path, original_app)
@@ -104,7 +105,7 @@ def copyFolderWithRoot(update_app_path: str, original_app: AppToUpdate):
         pyqt_utils.defrostAndSaveInto(resources_utils.getResource('installers/windows/installer.bat'), installer)
 
     os.chmod(installer, 0o755)  # make executable
-    command = [installer, update_app_path, original_app.folder]
+    command = [installer, "\"%s\"" % update_app_path, "\"%s\"" % original_app.folder]
 
     logger.info("Calling command %s" % ' '.join(command))
     try:

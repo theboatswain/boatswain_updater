@@ -1,3 +1,5 @@
+#!/usr/bin/env bash
+
 #  This file is part of Boatswain.
 #
 #      Boatswain is free software: you can redistribute it and/or modify
@@ -15,8 +17,6 @@
 #
 #
 
-#!/usr/bin/env bash
-
 UPDATE_APP_DIR="$1"
 ORIGINAL_APP_DIR="$2"
 BACKUP_DIR="/tmp/boatswain/backup"
@@ -24,20 +24,20 @@ BACKUP_DIR="/tmp/boatswain/backup"
 if [ ! -d "$ORIGINAL_APP_DIR" ]
 then
   echo "Directory $ORIGINAL_APP_DIR does not exists."
-  exit -1
+  exit 1
 fi
 
 if [ ! -d "$UPDATE_APP_DIR" ]
 then
   echo "Directory $UPDATE_APP_DIR does not exists."
-  exit -1
+  exit 1
 fi
 
 if [ ! -d "$BACKUP_DIR" ]
 then
   mkdir -p "$BACKUP_DIR"
 else
-  rm -rf "$BACKUP_DIR/*"
+  rm -rf "${BACKUP_DIR:?}/*"
 fi
 
 restore() {
