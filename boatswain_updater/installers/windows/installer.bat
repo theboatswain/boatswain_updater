@@ -1,3 +1,8 @@
+@echo off
+
+:: Run this script with elevation
+call :RequestAdminElevation "%~dpfs0" %* || goto:eof
+
 SET UPDATE_APP_DIR=%1
 SET ORIGINAL_APP_DIR=%2
 
