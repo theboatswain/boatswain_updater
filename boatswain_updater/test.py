@@ -48,6 +48,7 @@ def onApplicationInstalled():
 
 
 def run():
+    logging.basicConfig(filename='boatswain.log', level=logging.DEBUG)
     QApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
     QCoreApplication.setApplicationVersion("0.0.0")
     QCoreApplication.setApplicationName("BoatswainUpdater")
@@ -66,5 +67,4 @@ def run():
 
 
 if __name__ == '__main__':
-    logging.basicConfig(filename='boatswain.log', level=logging.DEBUG)
     run()

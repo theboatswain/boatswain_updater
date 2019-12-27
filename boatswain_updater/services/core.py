@@ -85,7 +85,8 @@ def copyFolderNoRoot(update_app_path: str, original_app: AppToUpdate):
         for f in files:
             if sys_utils.isWin() and os.path.isfile(os.path.join(original_app.folder, f)):
                 os.rename(os.path.join(original_app.folder, f), os.path.join(original_app.folder, f) + ".bak")
-            shutil.move(os.path.join(update_app_path, f), os.path.join(original_app.folder, f))
+            if os.path.isfile(os.path.join(update_app_path, f)):
+                shutil.move(os.path.join(update_app_path, f), os.path.join(original_app.folder, f))
     except OSError as e:
         logger.error("Exception occurred, rolling back to the earlier backed up version.\n Exception: %s", e)
         raise InstallationFailedException()
