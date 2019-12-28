@@ -118,7 +118,7 @@ def copyFolderWithRoot(update_app_path: str, original_app: AppToUpdate):
         Next
         oShell.Run strArgs, 0, false
         ''' % bat
-        os.write(vbfd, script)
+        os.write(vbfd, str.encode(script))
         os.close(vbfd)
 
     os.close(fd)
