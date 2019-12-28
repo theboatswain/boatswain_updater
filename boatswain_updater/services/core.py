@@ -107,8 +107,9 @@ def copyFolderWithRoot(update_app_path: str, original_app: AppToUpdate):
         fd, installer = tempfile.mkstemp(suffix='.bat')
         pyqt_utils.defrostAndSaveInto(resources_utils.getResource('installers/windows/installer.bat'), installer)
 
+    os.close(fd)
     os.chmod(installer, 0o755)  # make executable
-    command = [installer, "\"%s\"" % update_app_path, "\"%s\"" % original_app.folder]
+    command = [installer, update_app_path, original_app.folder]
 
     logger.info("Calling command %s" % ' '.join(command))
     try:
@@ -120,5 +121,5 @@ def copyFolderWithRoot(update_app_path: str, original_app: AppToUpdate):
     except OSError as e:
         logger.error("Exception occurred, rolling back to the earlier backed up version.\n Exception: %s", e)
     finally:
-        os.close(fd)
+        os.unlink(installer)
     raise InstallationFailedException()

@@ -40,9 +40,6 @@ def isFileWritable(file):
 
 
 def isDirWritable(directory):
-    if sys_utils.isWin():
-        return os.access(directory, os.W_OK)
-
     try:
         filename = os.path.join(directory, "tmp_file_tester.tmp")
         with open(filename, "w") as f:
@@ -81,7 +78,7 @@ def runAsAdmin(argv):
         commands.append(["sudo"] + argv)
     elif sys_utils.isWin():
         # For window machine, we expect to have the script to ask for permission inside the .bat file already
-        pass
+        commands.append(argv)
     else:
         raise NotImplementedError('Unable to recognise platform %s' % sys.platform)
     for command in commands:

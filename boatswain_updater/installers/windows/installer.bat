@@ -1,22 +1,30 @@
 :: Run this script with elevation
+@echo off
 
 SET UPDATE_APP_DIR=%~1
 SET ORIGINAL_APP_DIR=%~2
 
 call :RequestAdminElevation "%~dpfs0" %* || goto:eof
 
+echo Starting to rename from %ORIGINAL_APP_DIR%
+
 for /f "usebackq delims=|" %%f in (`dir /b /s /a-d "%ORIGINAL_APP_DIR%"`) do call :RenameCurrentRunningApp "%%f"
+
+echo Starting to move FROM %UPDATE_APP_DIR% to %ORIGINAL_APP_DIR%
+
 move "%UPDATE_APP_DIR%\*" "%ORIGINAL_APP_DIR%"
+
+echo Finished
 goto:eof
 
 :RenameCurrentRunningApp
-SET FILE_ABS_PATH=%1
+SET FILE_ABS_PATH=%~1
 SET FILE_NAME=%~nx1
 
 IF "%~x1" == ".bak" (
-    del %FILE_ABS_PATH%
+    del "%FILE_ABS_PATH%"
 ) ELSE (
-    REN %FILE_ABS_PATH% "%FILE_NAME%.bak"
+    ren "%FILE_ABS_PATH%" "%FILE_NAME%.bak"
 )
 goto:eof
 
@@ -73,7 +81,7 @@ setlocal ENABLEDELAYEDEXPANSION & set "_FilePath=%~1"
   echo/Set UAC = CreateObject^("Shell.Application"^) > %_vbspath% || (echo/&echo/Unable to create %_vbspath% & endlocal &md; 2>nul &goto:eof)
   echo/UAC.ShellExecute "%_batpath%", "", "", "runas", 1 >> %_vbspath% & echo/wscript.Quit(1)>> %_vbspath%
   :: Try to create %_batpath% file. If failed, exit with ERRORLEVEL 1
-  echo/@%* > "%_batpath%" || (echo/&echo/Unable to create %_batpath% & endlocal &md; 2>nul &goto:eof)
+  echo/@%* ^> %TEMP%\boatswain-installer.log > "%_batpath%" || (echo/&echo/Unable to create %_batpath% & endlocal &md; 2>nul &goto:eof)
   echo/@if %%errorlevel%%==9009 (echo/^&echo/Admin user could not read the batch file. If running from a mapped drive or UNC path, check if Admin user can read it.)^&echo/^& @if %%errorlevel%% NEQ 0 pause >> "%_batpath%"
 
   echo/&echo/_batpath = %_batpath%
