@@ -4,6 +4,9 @@
 SET UPDATE_APP_DIR=%~1
 SET ORIGINAL_APP_DIR=%~2
 
+echo Update App Dir: %UPDATE_APP_DIR%
+echo Original App Dir: %ORIGINAL_APP_DIR%
+
 call :RequestAdminElevation "%~dpfs0" %* || goto:eof
 
 echo Starting to rename from %ORIGINAL_APP_DIR%
