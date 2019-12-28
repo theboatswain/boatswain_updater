@@ -38,7 +38,7 @@ IF "%~x1" == ".bak" (
     echo Deleting file %FILE_ABS_PATH%
     del "%FILE_ABS_PATH%"
 )
-goto: eof
+goto:eof
 
 :RenameCurrentRunningApp
 SET FILE_ABS_PATH=%~1
