@@ -22,8 +22,10 @@ SET FILE_ABS_PATH=%~1
 SET FILE_NAME=%~nx1
 
 IF "%~x1" == ".bak" (
+    echo Deleting file %FILE_ABS_PATH%
     del "%FILE_ABS_PATH%"
 ) ELSE (
+    echo Renaming file %FILE_ABS_PATH%
     ren "%FILE_ABS_PATH%" "%FILE_NAME%.bak"
 )
 goto:eof
