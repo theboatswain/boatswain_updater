@@ -25,6 +25,7 @@ from boatswain_updater.utils import sys_utils
 
 SEE_MASK_NOCLOSEPROCESS = 0x00000040
 SEE_MASK_NO_CONSOLE = 0x00008000
+CREATE_NO_WINDOW = 0x08000000
 
 
 def locationIsWritable(path):
@@ -77,12 +78,14 @@ def runAsAdmin(argv):
             commands.append(["kdesudo"] + argv)
         commands.append(["sudo"] + argv)
     elif sys_utils.isWin():
-        commands.append(["cscript"] + argv)
+        # For window machine, we expect to have the script to ask for permission inside the .bat file already
+        commands.append(argv)
     else:
         raise NotImplementedError('Unable to recognise platform %s' % sys.platform)
     for command in commands:
         try:
-            return subprocess.call(command, stdin=None, stdout=None, stderr=None, shell=False)
+            return subprocess.call(command, stdin=None, stdout=None, stderr=None, shell=False,
+                                   creationflags=CREATE_NO_WINDOW)
         except OSError as e:
             if e.errno != errno.ENOENT or command[0] == "sudo":
                 raise e
