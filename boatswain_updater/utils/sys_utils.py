@@ -32,7 +32,7 @@ def isLinux():
 
 def getListOfFiles(root_dir):
     """
-    For the given path, get the List of all files in the directory tree
+    For the given path, get the List of all files in the directory tree in Relative form
     @rtype: set
     """
     file_set = set()

@@ -84,8 +84,11 @@ def runAsAdmin(argv):
         raise NotImplementedError('Unable to recognise platform %s' % sys.platform)
     for command in commands:
         try:
-            return subprocess.call(command, stdin=None, stdout=None, stderr=None, shell=False,
-                                   creationflags=CREATE_NO_WINDOW)
+            if sys_utils.isWin():
+                return subprocess.call(command, stdin=None, stdout=None, stderr=None, shell=False,
+                                       creationflags=CREATE_NO_WINDOW)
+            else:
+                return subprocess.call(command, stdin=None, stdout=None, stderr=None, shell=False)
         except OSError as e:
             if e.errno != errno.ENOENT or command[0] == "sudo":
                 raise e

@@ -64,7 +64,7 @@ def cleanupPreviousVersion():
         files = sys_utils.getListOfFiles(original_app.folder)
         for f in files:
             if f.endswith(".bak"):
-                os.unlink(f)
+                os.unlink(os.path.join(original_app.folder, f))
 
 
 def verifyUpdateStructure(update_app_path: str, original_app: AppToUpdate):
