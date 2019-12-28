@@ -107,7 +107,7 @@ def copyFolderWithRoot(update_app_path: str, original_app: AppToUpdate):
     else:
         fd, bat = tempfile.mkstemp(suffix='.bat')
         pyqt_utils.defrostAndSaveInto(resources_utils.getResource('installers/windows/installer.bat'), bat)
-        vbfd, installer = tempfile.mkdtemp(suffix='.vbs')
+        vbfd, installer = tempfile.mkstemp(suffix='.vbs')
         script = '''
         Set args = Wscript.Arguments
         Set oShell = CreateObject ("Wscript.Shell") 
