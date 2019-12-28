@@ -100,12 +100,26 @@ def copyFolderWithRoot(update_app_path: str, original_app: AppToUpdate):
     """
     In case we don't have permission, we will start an external script and ask for an executing permission
     """
+    bat = None
     if sys_utils.isMac() or sys_utils.isLinux():
         fd, installer = tempfile.mkstemp(suffix='.sh')
         pyqt_utils.defrostAndSaveInto(resources_utils.getResource('installers/posix/installer.sh'), installer)
     else:
-        fd, installer = tempfile.mkstemp(suffix='.bat')
-        pyqt_utils.defrostAndSaveInto(resources_utils.getResource('installers/windows/installer.bat'), installer)
+        fd, bat = tempfile.mkstemp(suffix='.bat')
+        pyqt_utils.defrostAndSaveInto(resources_utils.getResource('installers/windows/installer.bat'), bat)
+        vbfd, installer = tempfile.mkdtemp(suffix='.vbs')
+        script = '''
+        Set args = Wscript.Arguments
+        Set oShell = CreateObject ("Wscript.Shell") 
+        Dim strArgs
+        strArgs = "cmd /c %s"
+        For Each arg In args
+          strArgs = strArgs & " """ & arg & """"
+        Next
+        oShell.Run strArgs, 0, false
+        ''' % bat
+        vbfd.write(script)
+        vbfd.close()
 
     os.close(fd)
     os.chmod(installer, 0o755)  # make executable
@@ -122,4 +136,6 @@ def copyFolderWithRoot(update_app_path: str, original_app: AppToUpdate):
         logger.error("Exception occurred, rolling back to the earlier backed up version.\n Exception: %s", e)
     finally:
         os.unlink(installer)
+        if sys_utils.isWin() and bat:
+            os.unlink(bat)
     raise InstallationFailedException()

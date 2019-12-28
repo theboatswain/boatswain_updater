@@ -104,7 +104,7 @@ setlocal ENABLEDELAYEDEXPANSION & set "_FilePath=%~1"
   echo/Requesting elevation...
   :: Try to create %_vbspath% file. If failed, exit with ERRORLEVEL 1
   echo/Set UAC = CreateObject^("Shell.Application"^) > %_vbspath% || (echo/&echo/Unable to create %_vbspath% & endlocal &md; 2>nul &goto:eof)
-  echo/UAC.ShellExecute "%_batpath%", "", "", "runas", 1 >> %_vbspath% & echo/wscript.Quit(1)>> %_vbspath%
+  echo/UAC.ShellExecute "%_batpath%", "", "", "runas", 0 >> %_vbspath% & echo/wscript.Quit(1)>> %_vbspath%
   :: Try to create %_batpath% file. If failed, exit with ERRORLEVEL 1
   echo/@%* ^> %TEMP%\boatswain-installer.log > "%_batpath%" || (echo/&echo/Unable to create %_batpath% & endlocal &md; 2>nul &goto:eof)
   echo/@if %%errorlevel%%==9009 (echo/^&echo/Admin user could not read the batch file. If running from a mapped drive or UNC path, check if Admin user can read it.)^&echo/^& @if %%errorlevel%% NEQ 0 pause >> "%_batpath%"

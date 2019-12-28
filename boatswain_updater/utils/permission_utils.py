@@ -77,8 +77,7 @@ def runAsAdmin(argv):
             commands.append(["kdesudo"] + argv)
         commands.append(["sudo"] + argv)
     elif sys_utils.isWin():
-        # For window machine, we expect to have the script to ask for permission inside the .bat file already
-        commands.append(argv)
+        commands.append(["cscript"] + argv)
     else:
         raise NotImplementedError('Unable to recognise platform %s' % sys.platform)
     for command in commands:
