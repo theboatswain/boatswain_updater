@@ -118,8 +118,8 @@ def copyFolderWithRoot(update_app_path: str, original_app: AppToUpdate):
         Next
         oShell.Run strArgs, 0, false
         ''' % bat
-        vbfd.write(script)
-        vbfd.close()
+        os.write(vbfd, script)
+        os.close(vbfd)
 
     os.close(fd)
     os.chmod(installer, 0o755)  # make executable
