@@ -22,6 +22,10 @@ echo Starting to move FROM %UPDATE_APP_DIR% to %ORIGINAL_APP_DIR%
 
 move "%UPDATE_APP_DIR%\*" "%ORIGINAL_APP_DIR%"
 
+echo Reset permission
+
+icacls "%ORIGINAL_APP_DIR%\*" /q /c /t /reset
+
 echo Finished
 echo 1 > "%STATUS_FILE%"
 goto:eof
