@@ -44,10 +44,7 @@ def installUpdate(update_file: str):
     zip_file.close()
     original_app = AppToUpdate()
 
-    if sys_utils.isMac():
-        update_app_path = os.path.join(extract_to, os.path.basename(original_app.folder))
-    else:
-        update_app_path = extract_to
+    update_app_path = os.path.join(extract_to, os.listdir(extract_to)[0])
 
     logger.info('Update data path: ' + update_app_path)
     if not verifyUpdateStructure(update_app_path, original_app):
@@ -56,19 +53,18 @@ def installUpdate(update_file: str):
         raise ReleaseFolderStructureIncorrect()
 
     if original_app.hasPermission():
-        cleanupPreviousVersion()
         copyFolderNoRoot(update_app_path, original_app)
     else:
         copyFolderWithRoot(update_app_path, original_app)
 
 
 def cleanupPreviousVersion():
-    if sys_utils.isWin():
-        original_app = AppToUpdate()
-        files = os.listdir(original_app.folder)
+    original_app = AppToUpdate()
+    if permission_utils.isDirWritable(original_app.folder):
+        files = sys_utils.getListOfFiles(original_app.folder)
         for f in files:
             if f.endswith(".bak"):
-                os.unlink(os.path.join(original_app.folder, f))
+                os.unlink(f)
 
 
 def verifyUpdateStructure(update_app_path: str, original_app: AppToUpdate):
@@ -83,14 +79,11 @@ def copyFolderNoRoot(update_app_path: str, original_app: AppToUpdate):
     """
     logger.info("Starting to move files from %s -> %s" % (update_app_path, original_app.folder))
     try:
-        if not sys_utils.isWin():
-            shutil.rmtree(original_app.folder)
-        files = os.listdir(update_app_path)
+        files = sys_utils.getListOfFiles(update_app_path)
         for f in files:
-            if sys_utils.isWin() and os.path.isfile(os.path.join(original_app.folder, f)):
+            if os.path.isfile(os.path.join(original_app.folder, f)):
                 os.rename(os.path.join(original_app.folder, f), os.path.join(original_app.folder, f) + ".bak")
-            if os.path.isfile(os.path.join(update_app_path, f)):
-                shutil.move(os.path.join(update_app_path, f), os.path.join(original_app.folder, f))
+            shutil.move(os.path.join(update_app_path, f), os.path.join(original_app.folder, f))
     except OSError as e:
         logger.error("Exception occurred, rolling back to the earlier backed up version.\n Exception: %s", e)
         raise InstallationFailedException()

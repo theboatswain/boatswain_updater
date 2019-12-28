@@ -53,7 +53,7 @@ def run():
     print("TMP dir: %s" % TMP_DIR)
     logging.basicConfig(filename=os.path.join(TMP_DIR, 'boatswain-updater.log'), level=logging.DEBUG)
     QApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
-    QCoreApplication.setApplicationVersion("1.0.0")
+    QCoreApplication.setApplicationVersion("0.0.0")
     QCoreApplication.setApplicationName("BoatswainUpdater")
     app = QApplication(sys.argv)
 
