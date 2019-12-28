@@ -120,4 +120,6 @@ def copyFolderWithRoot(update_app_path: str, original_app: AppToUpdate):
             logger.error("Exception occurred, exit code: %d" % res_code)
     except OSError as e:
         logger.error("Exception occurred, rolling back to the earlier backed up version.\n Exception: %s", e)
+    finally:
+        os.unlink(installer)
     raise InstallationFailedException()

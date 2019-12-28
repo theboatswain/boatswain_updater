@@ -10,6 +10,10 @@ echo Original App Dir: %ORIGINAL_APP_DIR%
 
 call :RequestAdminElevation "%~dpfs0" %* || goto:eof
 
+echo Starting to clean up
+
+for /f "usebackq delims=|" %%f in (`dir /b /s /a-d "%ORIGINAL_APP_DIR%"`) do call :CleaningUpPreviousUpdate "%%f"
+
 echo Starting to rename from %ORIGINAL_APP_DIR%
 
 for /f "usebackq delims=|" %%f in (`dir /b /s /a-d "%ORIGINAL_APP_DIR%"`) do call :RenameCurrentRunningApp "%%f"
@@ -22,17 +26,23 @@ echo Finished
 echo 1 > "%STATUS_FILE%"
 goto:eof
 
-:RenameCurrentRunningApp
+:CleaningUpPreviousUpdate
 SET FILE_ABS_PATH=%~1
 SET FILE_NAME=%~nx1
 
 IF "%~x1" == ".bak" (
     echo Deleting file %FILE_ABS_PATH%
     del "%FILE_ABS_PATH%"
-) ELSE (
-    echo Renaming file %FILE_ABS_PATH%
-    ren "%FILE_ABS_PATH%" "%FILE_NAME%.bak"
 )
+goto: eof
+
+:RenameCurrentRunningApp
+SET FILE_ABS_PATH=%~1
+SET FILE_NAME=%~nx1
+
+echo Renaming file %FILE_ABS_PATH%
+ren "%FILE_ABS_PATH%" "%FILE_NAME%.bak"
+
 goto:eof
 
 :WaitForScriptDone
