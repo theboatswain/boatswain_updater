@@ -3,6 +3,7 @@
 
 SET UPDATE_APP_DIR=%~1
 SET ORIGINAL_APP_DIR=%~2
+SET STATUS_FILE=%TEMP%\boatswain-status.txt
 
 echo Update App Dir: %UPDATE_APP_DIR%
 echo Original App Dir: %ORIGINAL_APP_DIR%
@@ -18,6 +19,7 @@ echo Starting to move FROM %UPDATE_APP_DIR% to %ORIGINAL_APP_DIR%
 move "%UPDATE_APP_DIR%\*" "%ORIGINAL_APP_DIR%"
 
 echo Finished
+echo 1 > "%STATUS_FILE%"
 goto:eof
 
 :RenameCurrentRunningApp
@@ -33,6 +35,10 @@ IF "%~x1" == ".bak" (
 )
 goto:eof
 
+:WaitForScriptDone
+IF EXIST "%STATUS_FILE%" (goto:eof)
+ping 1.0.0.0 -n 1 -w 500 >nul
+goto:WaitForScriptDone
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :RequestAdminElevation FilePath %* || goto:eof
@@ -93,6 +99,9 @@ setlocal ENABLEDELAYEDEXPANSION & set "_FilePath=%~1"
 
   :: Run %_vbspath%, that calls %_batpath%, that calls the original file
   %_vbspath% && (echo/&echo/Failed to run VBscript %_vbspath% &endlocal &md; 2>nul & goto:eof)
+
+  call :WaitForScriptDone
+  del "%STATUS_FILE%"
 
   :: Vbscript has been run, exit with ERRORLEVEL -1
   echo/&echo/Elevation was requested on a new CMD window &endlocal &fc;: 2>nul & goto:eof
