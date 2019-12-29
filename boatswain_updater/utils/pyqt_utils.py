@@ -20,10 +20,12 @@ from contextlib import closing
 from PyQt5.QtCore import QFile
 from PyQt5.QtGui import QGuiApplication
 
+from boatswain_updater.utils import sys_utils
+
 logger = logging.getLogger(__name__)
-ref_dpi = 72
-ref_height = 900
-ref_width = 1440
+ref_dpi = 72 if sys_utils.isMac() else 96
+external_pixel_ratio = None
+external_font_ratio = None
 
 
 def disconnectAllSignals(widget):
@@ -42,18 +44,20 @@ def defrostAndSaveInto(filename, destination):
                 the_file.write(frozen_data)
 
 
+def getPrimaryScreen():
+    return QGuiApplication.primaryScreen()
+
+
 def rt(pixel):
-    rect = QGuiApplication.primaryScreen().geometry()
-    height = min(rect.width(), rect.height())
-    width = max(rect.width(), rect.height())
-    ratio = min(height / ref_height, width / ref_width)
-    return round(pixel * ratio)
+    if external_pixel_ratio:
+        return pixel * external_pixel_ratio
+    scale = getPrimaryScreen().logicalDotsPerInch() / ref_dpi
+    return round(pixel * scale)
 
 
 def applyFontRatio(point):
-    dpi = QGuiApplication.primaryScreen().logicalDotsPerInch()
-    rect = QGuiApplication.primaryScreen().geometry()
-    height = min(rect.width(), rect.height())
-    width = max(rect.width(), rect.height())
-    ratio_font = min(height * ref_dpi / (dpi * ref_height), width * ref_dpi / (dpi * ref_width))
-    return round(point * ratio_font)
+    if external_font_ratio:
+        return point * external_font_ratio
+    if sys_utils.isMac():
+        return point
+    return round(point * 0.8)
