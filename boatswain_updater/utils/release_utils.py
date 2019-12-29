@@ -18,7 +18,7 @@
 from boatswain_updater.models.release import Release
 
 
-def compare_release(a: Release, b: Release) -> int:
+def compareRelease(a: Release, b: Release) -> int:
     if b.lessThan(a):
         return -1
     elif b.equals(a):

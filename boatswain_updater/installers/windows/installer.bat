@@ -1,3 +1,19 @@
+::  This file is part of Boatswain.
+::
+::      Boatswain is free software: you can redistribute it and/or modify
+::      it under the terms of the GNU General Public License as published by
+::      the Free Software Foundation, either version 3 of the License, or
+::      (at your option) any later version.
+::
+::      Boatswain is distributed in the hope that it will be useful,
+::      but WITHOUT ANY WARRANTY; without even the implied warranty of
+::      MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+::      GNU General Public License for more details.
+::
+::      You should have received a copy of the GNU General Public License
+::      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
+::
+::
 :: Run this script with elevation
 @echo off
 
@@ -56,7 +72,7 @@ goto:WaitForScriptDone
 
 :::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::::
 :RequestAdminElevation FilePath %* || goto:eof
-::
+:: Credit: https://stackoverflow.com/questions/1894967/how-to-request-administrator-access-inside-a-batch-file
 :: By:   Cyberponk,     v1.5 - 10/06/2016 - Changed the admin rights test method from cacls to fltmc
 ::          v1.4 - 17/05/2016 - Added instructions for arguments with ! char
 ::          v1.3 - 01/08/2015 - Fixed not returning to original folder after elevation successful

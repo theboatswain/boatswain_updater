@@ -32,6 +32,13 @@ logger = logging.getLogger(__name__)
 def installUpdate(update_file: str):
     """
     Install the update from the given update file as Zip
+    Step 1: Extracting the file
+    Step 2: Verify updating structure
+    Step 3:
+        If the destination has write permission, then directly extract data to that folder
+        Else, request for privilege permission to execute the installer scripts
+            located in the boatswain_updater/installer's folder
+    At this moment, if no error occurred, then restart the application so then the new update will take effective
     """
 
     logger.info('Starting update')
@@ -59,6 +66,10 @@ def installUpdate(update_file: str):
 
 
 def cleanupPreviousVersion():
+    """
+    When we are doing the processing of update, then all of the files of the old version will be added .bak extension
+    This function will clean those file.
+    """
     original_app = AppToUpdate()
     if permission_utils.isDirWritable(original_app.folder):
         files = sys_utils.getListOfFiles(original_app.folder)
@@ -68,6 +79,11 @@ def cleanupPreviousVersion():
 
 
 def verifyUpdateStructure(update_app_path: str, original_app: AppToUpdate):
+    """
+    This function will ensure the structure of the update folder path have the same structure
+    with the original folder path
+    @return: boolean
+    """
     relative_exe_location = original_app.getRelativeExecutable()
     return os.path.isfile(os.path.join(update_app_path, relative_exe_location))
 
@@ -76,11 +92,11 @@ def copyFolderNoRoot(update_app_path: str, original_app: AppToUpdate):
     """
     If we have permission to write in the destination, no need to do anything too complex
     Move the extracted files into the destination folder
+    The original files will be added .bak extension for backing up
     """
     logger.info("Starting to move files from %s -> %s" % (update_app_path, original_app.folder))
     try:
-        files = sys_utils.getListOfFiles(update_app_path)
-        for f in files:
+        for f in sys_utils.getListOfFiles(update_app_path):
             if os.path.isfile(os.path.join(original_app.folder, f)):
                 os.rename(os.path.join(original_app.folder, f), os.path.join(original_app.folder, f) + ".bak")
             shutil.move(os.path.join(update_app_path, f), os.path.join(original_app.folder, f))

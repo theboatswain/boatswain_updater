@@ -36,6 +36,10 @@ def disconnectAllSignals(widget):
 
 
 def defrostAndSaveInto(filename, destination):
+    """
+    When the application is being frozen, all resource files will be encoded into the executable file
+    This function will extract a file based on it's name and save it into the given destination
+    """
     logger.info('Attempting to defrost %s and save into %s' % (filename, destination))
     with closing(QFile(filename)) as frozen_file:
         if frozen_file.open(QFile.ReadOnly):

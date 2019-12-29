@@ -67,7 +67,7 @@ class Feed(QObject):
 
     def onLoadFinished(self, releases):
         self.all_releases = releases
-        self.all_releases.sort(key=functools.cmp_to_key(release_utils.compare_release))
+        self.all_releases.sort(key=functools.cmp_to_key(release_utils.compareRelease))
         self.__feed_ready = True
         self.ready.emit()
 
