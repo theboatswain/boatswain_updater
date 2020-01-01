@@ -21,15 +21,21 @@ import shutil
 import tempfile
 import zipfile
 
-from boatswain_updater import resources_utils
 from boatswain_updater.exceptions.installation import InstallationFailedException, ReleaseFolderStructureIncorrect
 from boatswain_updater.models.app_to_update import AppToUpdate
-from boatswain_updater.utils import sys_utils, pyqt_utils, permission_utils
+from boatswain_updater.utils import sys_utils, pyqt_utils, permission_utils, resources_utils
 
 logger = logging.getLogger(__name__)
+exclude_dirs = ['__MACOSX']
 
 
-def installUpdate(update_file: str):
+def getUpdateDir(extract_to):
+    for directory in os.listdir(extract_to):
+        if os.path.isdir(os.path.join(extract_to, directory)) and directory not in exclude_dirs:
+            return directory
+
+
+def installUpdate(update_file: str, progress_callback=None):
     """
     Install the update from the given update file as Zip
     Step 1: Extracting the file
@@ -51,7 +57,7 @@ def installUpdate(update_file: str):
     zip_file.close()
     original_app = AppToUpdate()
 
-    update_app_path = os.path.join(extract_to, os.listdir(extract_to)[0])
+    update_app_path = os.path.join(extract_to, getUpdateDir(extract_to))
 
     logger.info('Update data path: ' + update_app_path)
     if not verifyUpdateStructure(update_app_path, original_app):
@@ -60,6 +66,7 @@ def installUpdate(update_file: str):
         raise ReleaseFolderStructureIncorrect()
 
     if original_app.hasPermission():
+        cleanupPreviousVersion()
         copyFolderNoRoot(update_app_path, original_app)
     else:
         copyFolderWithRoot(update_app_path, original_app)

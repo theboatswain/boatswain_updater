@@ -1,4 +1,4 @@
-from boatswain_updater.test import run
+from boatswain_updater.standalone import run
 
 
 def main():

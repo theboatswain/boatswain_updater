@@ -24,6 +24,7 @@ from boatswain_updater.utils import permission_utils
 class AppToUpdate:
 
     folder: str
+    resource_dir: str
     executable: str
 
     def __init__(self) -> None:
@@ -33,8 +34,13 @@ class AppToUpdate:
         (all_before_before_last_dir, before_last_dir) = os.path.split(all_before_last_dir)
         if last_dir == 'MacOS' and before_last_dir == 'Contents':
             self.folder = all_before_before_last_dir
+            self.resource_dir = os.path.join(all_before_last_dir, "Resources")
+        elif last_dir == 'Resources' and before_last_dir == 'Contents':
+            self.folder = all_before_before_last_dir
+            self.resource_dir = os.path.join(all_before_last_dir, "Resources")
         else:
             self.folder = all_last_dir
+            self.resource_dir = all_last_dir
 
     def hasPermission(self):
         return permission_utils.locationIsWritable(self.folder)

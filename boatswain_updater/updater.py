@@ -25,6 +25,7 @@ from boatswain_updater.exceptions.installation import InstallationFailedExceptio
 from boatswain_updater.models.feed import Feed
 from boatswain_updater.models.release import Release
 from boatswain_updater.services import setting_service, core
+from boatswain_updater.services.worker_service import Worker, threadpool
 from boatswain_updater.updater_ui import UpdaterUi
 from boatswain_updater.utils import pyqt_utils, release_utils
 from boatswain_updater.utils.constants import SKIP_RELEASE
@@ -39,7 +40,6 @@ class Updater(QObject):
     _releases: List[Release] = []
     _updates: List[Release] = []
     _silent = False
-    _auto_install = False
 
     def __init__(self, parent, feed: Feed) -> None:
         super().__init__(parent)
@@ -48,7 +48,6 @@ class Updater(QObject):
         self.ui = UpdaterUi(self.dialog)
         self.dialog.ui = self.ui
         self.feed = feed
-        core.cleanupPreviousVersion()
 
     def _showDialog(self):
         screen_geometry = QApplication.desktop().screenGeometry()
@@ -57,13 +56,12 @@ class Updater(QObject):
         self.dialog.move(x, y)
         self.dialog.show()
 
-    def checkForUpdate(self, silent=False, auto_install=False):
+    def checkForUpdate(self, silent=False):
         """
         Check for new update, if yes, then show the update confirmation window
         :param silent: whether or not we show the loading window
         """
         self._silent = silent
-        self._auto_install = auto_install
         if not silent:
             self._showDialog()
         self.setupLoadingUi()
@@ -86,10 +84,8 @@ class Updater(QObject):
         skip_release = setting_service.getSettingsValue(SKIP_RELEASE) == latest_version
         if latest_version:
             self.setupUpdateUi()
-            if self._silent and not skip_release and not self._auto_install:
+            if self._silent and not skip_release:
                 self._showDialog()
-            elif not skip_release and self._auto_install:
-                self.onButtonInstall()
 
     def setIcon(self, pixmap: QPixmap):
         self.ui.label_icon.setPixmap(pixmap)
@@ -213,18 +209,18 @@ class Updater(QObject):
         self.ui.button_install_and_relaunch.setFocus()
         self.ui.button_install_and_relaunch.clicked.connect(self.installUpdate)
         self.dialog.adjustSize()
-        if self._auto_install:
-            self.installUpdate()
 
     def installUpdate(self):
         logger.info("Starting to install update...")
         file = self.feed.getDownloadFile()
-        try:
-            core.installUpdate(file)
-            self.installed.emit()
-            self.dialog.accept()
-        except InstallationFailedException:
-            self.setupInstallFailedUi()
+        worker = Worker(core.installUpdate, file)
+        worker.signals.result.connect(self.onInstalled)
+        worker.signals.error.connect(lambda x: self.setupInstallFailedUi())
+        threadpool.start(worker)
+
+    def onInstalled(self):
+        self.installed.emit()
+        self.dialog.accept()
 
     def setupInstallFailedUi(self):
         self.resetUi()

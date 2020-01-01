@@ -21,5 +21,5 @@ current_dir = os.path.dirname(__file__)
 
 
 def getResource(file):
-    path = os.path.join(current_dir, file)
+    path = os.path.join(os.path.dirname(current_dir), file)
     return path

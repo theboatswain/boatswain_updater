@@ -19,7 +19,7 @@
 
 UPDATE_APP_DIR="$1"
 ORIGINAL_APP_DIR="$2"
-BACKUP_DIR="/tmp/boatswain/backup"
+BACKUP_EXTENSION=".bak"
 
 if [ ! -d "$ORIGINAL_APP_DIR" ]
 then
@@ -33,24 +33,25 @@ then
   exit 1
 fi
 
-if [ ! -d "$BACKUP_DIR" ]
-then
-  mkdir -p "$BACKUP_DIR"
-else
-  rm -rf "${BACKUP_DIR:?}/*"
-fi
-
 restore() {
-  for x in $BACKUP_DIR/* $BACKUP_DIR/.[!.]* $BACKUP_DIR/..?*; do
-    if [ -e "$x" ]; then mv -- "$x" $ORIGINAL_APP_DIR/; fi
+  for x in $ORIGINAL_APP_DIR/* $ORIGINAL_APP_DIR/.[!.]* $ORIGINAL_APP_DIR/..?*; do
+    if [ -e "$x" ]; then mv -- "$x" "${x%"$BACKUP_EXTENSION"}"/; fi
   done
 }
 
+cleanup() {
+  for x in $ORIGINAL_APP_DIR/* $ORIGINAL_APP_DIR/.[!.]* $ORIGINAL_APP_DIR/..?*; do
+    if [ -e "$x" ] && [[ "$x" == *$BACKUP_EXTENSION ]]; then rm -- "$x"; fi
+  done
+}
+
+cleanup
+
 # Move things from application directory to backup folder
 for x in $ORIGINAL_APP_DIR/* $ORIGINAL_APP_DIR/.[!.]* $ORIGINAL_APP_DIR/..?*; do
-  if [ -e "$x" ]; then mv -- "$x" $BACKUP_DIR/; fi
+  if [ -e "$x" ]; then mv -- "$x" "$x.bak"; fi
   if [ $? -ne 0 ]; then
-    echo "Unnable to move file $x from $ORIGINAL_APP_DIR to $BACKUP_DIR"
+    echo "Unnable to backup file $x"
     restore
     exit 1
   fi
@@ -65,8 +66,5 @@ for x in $UPDATE_APP_DIR/* $UPDATE_APP_DIR/.[!.]* $UPDATE_APP_DIR/..?*; do
     exit 1
   fi
 done
-
-# Remove backup folder
-rm -rf "$BACKUP_DIR"
 
 exit 0;
