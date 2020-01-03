@@ -14,13 +14,13 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+
 import logging
 from typing import List
 
 from PyQt5.QtCore import pyqtSignal, QCoreApplication, QSize, QObject
 from PyQt5.QtGui import QPixmap
 from PyQt5.QtWidgets import QDialog, QApplication, QMessageBox
-from boatswain_updater.exceptions.installation import InstallationFailedException
 
 from boatswain_updater.models.feed import Feed
 from boatswain_updater.models.release import Release

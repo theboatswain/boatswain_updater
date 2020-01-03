@@ -1,6 +1,6 @@
 {
   "Name": "Boatswain Updater",
   "Version": "0.0.0",
-  "Icon": "no-icon.svg",
-  "Repo": "your-repo-here"
+  "Icon": "resources/boatswain.svg",
+  "Repo": "theboatswain/updater_example"
 }

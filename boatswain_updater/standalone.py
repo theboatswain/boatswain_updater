@@ -14,6 +14,7 @@
 #      along with Boatswain.  If not, see <https://www.gnu.org/licenses/>.
 #
 #
+import argparse
 import json
 import logging
 import os
@@ -53,26 +54,47 @@ def deFrostPem():
         os.environ['REQUESTS_CA_BUNDLE'] = PEM_FILE
 
 
+def getUpdaterConfiguration():
+    # The configuration file have to be in the same folder with this app
+    # To avoid any sort of attacking by calling it from other untrusted script/application
+    original_app = AppToUpdate()
+    json_file_conf = os.path.join(original_app.resource_dir, "update.json")
+    with open(json_file_conf) as f:
+        return json.load(f)
+
+
 def onApplicationInstalled():
     os.execlp(sys.executable, *sys.argv)
 
 
 def run():
-    original_app = AppToUpdate()
-    with open(os.path.join(original_app.resource_dir, "update.json")) as f:
-        data = json.load(f)
-    logging.basicConfig(level=logging.DEBUG)
+    parser = argparse.ArgumentParser(description='Process some integers.')
+    parser.add_argument('--log-level', dest='loglevel', type=str, default='FATAL',
+                        help='Set log level, DEBUG > INFO > WARN > ERROR > FATAL. Default FATAL')
+    parser.add_argument('--checking-mode', dest='checking', type=bool, default=False,
+                        help='Only do the checking new version')
+
+    args = parser.parse_args()
+    data = getUpdaterConfiguration()
+    logging.basicConfig(level=logging.getLevelName(args.loglevel))
     QApplication.setAttribute(Qt.AA_DisableHighDpiScaling)
     QCoreApplication.setApplicationVersion(data['Version'])
     QCoreApplication.setApplicationName(data['Name'])
-    app = QApplication(sys.argv)
-
     deFrostPem()
+
+    feed = Feed(data['Repo'])
+    if args.checking:
+        releases = feed.makeLoadRequest(feed.url)
+        feed.onLoadFinished(releases)
+        last_release = feed.getLatestRelease()
+        print({'last-release': {} if not last_release else last_release.__dict__})
+        exit(0)
+
+    app = QApplication(sys.argv)
 
     window = MainWindow()
     pixmap = QIcon(data['Icon']).pixmap(QSize(64, 64))
-    feed = Feed(data['Repo'])
-    update_dialog = Updater(window, feed)
+    update_dialog = Updater(None, feed)
     update_dialog.setIcon(pixmap)
     update_dialog.installed.connect(onApplicationInstalled)
     update_dialog.checkForUpdate(silent=False)

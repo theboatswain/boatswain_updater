@@ -22,10 +22,13 @@ from typing import List
 
 import requests
 from PyQt5.QtCore import QObject, pyqtSignal, QUrl
+from PyQt5.QtWidgets import QApplication
 
 from boatswain_updater.models.release import Release
+from boatswain_updater.services import setting_service
 from boatswain_updater.services.worker_service import Worker, threadpool
 from boatswain_updater.utils import release_utils
+from boatswain_updater.utils.constants import SKIP_RELEASE
 
 
 class Feed(QObject):
@@ -65,13 +68,23 @@ class Feed(QObject):
         worker.signals.error.connect(self.handleDownloadError)
         threadpool.start(worker)
 
+    def getLatestRelease(self):
+        release = Release(QApplication.applicationVersion())
+        _updates = self.getUpdates(release)
+        if len(_updates) > 0:
+            last_release = _updates[0]
+            skip_release = setting_service.getSettingsValue(SKIP_RELEASE) == last_release.getVersion()
+            if not skip_release:
+                return last_release
+        return None
+
     def onLoadFinished(self, releases):
         self.all_releases = releases
         self.all_releases.sort(key=functools.cmp_to_key(release_utils.compareRelease))
         self.__feed_ready = True
         self.ready.emit()
 
-    def makeLoadRequest(self, url, progress_callback):
+    def makeLoadRequest(self, url, progress_callback=None):
         releases = requests.get(url)
         result = []
         for rls in releases.json():
