@@ -1,6 +1,6 @@
 #  This file is part of Boatswain.
 #
-#      Boatswain is free software: you can redistribute it and/or modify
+#      Boatswain<https://github.com/theboatswain> is free software: you can redistribute it and/or modify
 #      it under the terms of the GNU General Public License as published by
 #      the Free Software Foundation, either version 3 of the License, or
 #      (at your option) any later version.
@@ -87,8 +87,11 @@ def run():
         releases = feed.makeLoadRequest(feed.url)
         feed.onLoadFinished(releases)
         last_release = feed.getLatestRelease()
-        print({'last-release': {} if not last_release else last_release.__dict__})
-        exit(0)
+        print(json.dumps({
+            'has_release': last_release is not None,
+            'last_release': {} if not last_release else last_release.__dict__
+        }))
+        sys.exit(0)
 
     app = QApplication(sys.argv)
 
