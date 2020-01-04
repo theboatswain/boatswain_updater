@@ -5,3 +5,4 @@ release
 sysroot-macos-64
 build*
 *.egg-info
+dist
