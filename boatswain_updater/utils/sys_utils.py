@@ -30,6 +30,12 @@ def isLinux():
     return sys.platform.startswith('linux')
 
 
+def getArchitecture():
+    if sys.maxsize > 0x100000000:
+        return 'x64'
+    return 'x32'
+
+
 def getListOfFiles(root_dir):
     """
     For the given path, get the List of all files in the directory tree in Relative form

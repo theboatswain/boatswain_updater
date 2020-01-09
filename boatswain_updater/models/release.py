@@ -38,11 +38,13 @@ class Release:
         assets = object_json["assets"]
 
         if sys_utils.isMac():
+            # For mac, always x64
             plf = 'macOS'
         elif sys_utils.isWin():
-            plf = 'win32-portable'
+            # For windows, depending on the architecture x32/x64. But we always looking for the portable version of it
+            plf = 'win-%s-portable' % sys_utils.getArchitecture()
         else:
-            plf = 'unix'
+            plf = 'linux-%s' % sys_utils.getArchitecture()
 
         for asset in assets:
             download_info = asset
