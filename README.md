@@ -17,7 +17,28 @@ Boatswain Auto Updater is a PyQT based, cross-platform application, which allows
 BAT works with or without super user privilege, depending the location of the installation folder. If you installed your application to user directory then the updating process will go smoothly, without asking anything. However, if you installed it into system directory (i.e **Windows**: *C:\Program Files\xxx*, **MacOS**: */Applications/xxx*, **Linux**: */xxx*) then a prompt asking for privilege permission will appear and the user just need to approve it, so then the updater will take care the rest.
 
 ## How does it work?
-  
+BAT relies on Github releases web services, which mean, you have to declare your Github repo in the implementation (python based) or in the configuration file (non-python based) of your application. Whenever you publish a new release in your Github releases with some **specified release files**, then, in the client side, BAT will notify user and ask for updating. If the user approved, then the following steps will be performed:
+
+ - Download the newly updated version (zip archived) and save into temp folder
+ - Extract the downloaded zip file
+ - Inside the running application folder, 
+	 - Delete all file with ".bak" extension (for cleaning previous version)
+	 - Rename all files  by adding *.bak* extension
+ - Move everything inside the extracted folder to the running application folder
+ - Notify of finishing (python based) or exit (non-python based)
+
+At this step, you will mostly want to restart your application, so then the new update will take effect. But you also can perform some finishing works, depending on your requirements.
+### Github release file name's formats
+Because of some limitation of Github APIs, we can only use naming convention to specify which release's file for which Operator System and Architecture. In general, your release file name will have the following format:
+```bash
+<project_name>-(macOS|win-<arch>|linux-<arch>)-<version>.zip
+```
+Whereas:
+ - project_name: Your project's name, can be any characters or numbers ([A-Za-z0-9-_]+)
+ - arch: Architecture, value is including 32 or 64, which corresponding to 32-bit and 64-bit architectures
+ - version: The new version of your project, have to be using [semver](https://semver.org/) format
+
+
 ## Installation  
 ### For Python based application
 If your project is using python, then add the following lines of code into your main application:
