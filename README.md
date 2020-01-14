@@ -33,8 +33,9 @@ At this step, you will mostly want to restart your application, so then the new 
 All of your files have to be located in your application's root folder, you may have sub directories, but **NEVER** put your application executable file out side of your application's root folder. As indicated in the previous step, if you put your executable file out side of your application's root folder, you may rename/delete unwanted user files/folders. Please be careful checking this before making any changes.
 
 > For MacOS, all your files should be located in *yourproject.app* folder
-> For Windows/Linux, you should put everything under your application's root folder, i.e /path/to/yourproject
-> **WARNING** Again, 
+>
+> For Windows/Linux, you should put everything under your application's root folder, i.e /path/to/yourproject. You can use symlink to link to your actual executable file, but never put it outside of your application's folder
+
 
 ### Github release file name's formats
 Because of some limitation of Github APIs, we can only use naming convention to specify which release's file for which Operator System and Architecture. In general, your release file name will have the following format:
