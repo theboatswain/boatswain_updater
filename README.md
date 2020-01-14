@@ -28,6 +28,14 @@ BAT relies on Github releases web services, which mean, you have to declare your
  - Notify of finishing (python based) or exit (non-python based)
 
 At this step, you will mostly want to restart your application, so then the new update will take effect. But you also can perform some finishing works, depending on your requirements.
+
+### Structure of your application project
+All of your files have to be located in your application's root folder, you may have sub directories, but **NEVER** put your application executable file out side of your application's root folder. As indicated in the previous step, if you put your executable file out side of your application's root folder, you may rename/delete unwanted user files/folders. Please be careful checking this before making any changes.
+
+> For MacOS, all your files should be located in *yourproject.app* folder
+> For Windows/Linux, you should put everything under your application's root folder, i.e /path/to/yourproject
+> **WARNING** Again, 
+
 ### Github release file name's formats
 Because of some limitation of Github APIs, we can only use naming convention to specify which release's file for which Operator System and Architecture. In general, your release file name will have the following format:
 ```bash
@@ -54,7 +62,7 @@ update_dialog.installed.connect(<function to call after finishing updating proce
 update_dialog.checkForUpdate(silent=True)
 ```
 
-And also put this line into your *requirements.txt* `boatswain_updater==1.1.3`
+And also put this line into your *requirements.txt* `boatswain_updater==1.1.4`
 You can also take a look at BAT integration [here](https://github.com/theboatswain/boatswain/blob/master/boatswain/main.py#L74-L79) as reference.
 
 ### For non-python application
@@ -78,7 +86,7 @@ Once modified, you can copy these two files into your application's root folder.
 
 For checking new version of your application (in background, for example):
 
-`path/to/AutoUpdater --checking-mode=True`
+`/path/to/AutoUpdater --checking-mode=True`
 
 This command will return to you an output as json format, with the following information:
 ```json
@@ -94,7 +102,7 @@ This command will return to you an output as json format, with the following inf
 ```
 Although, it will give you a lot of informations regarding your newly version. But you just need to focus on the *"has_release"* attribute. Since it indicates that you have got a new version, and so you can call the AutoUpdater for asking user to update it.
 
-`path/to/AutoUpdater`
+`/path/to/AutoUpdater`
 
 This command will launch the Updater dialog and showing the new version to user, asking for updating.
 
