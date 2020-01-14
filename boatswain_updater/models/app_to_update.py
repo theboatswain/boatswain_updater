@@ -28,7 +28,7 @@ class AppToUpdate:
     executable: str
 
     def __init__(self) -> None:
-        self.executable = sys.executable
+        self.executable = os.path.realpath(sys.executable)
         (all_last_dir, folder) = os.path.split(self.executable)
         (all_before_last_dir, last_dir) = os.path.split(all_last_dir)
         (all_before_before_last_dir, before_last_dir) = os.path.split(all_before_last_dir)
