@@ -1,5 +1,5 @@
 
-# Auto Updater
+# Boatswain Auto Updater
 Boatswain Auto Updater (BAT) is an open source, multiple platforms auto updater, which will ensure your clients always staying up-to-date with the newest version of your application. Although, BAT is a part of [Boatswain application](https://github.com/theboatswain/boatswain) but we have implemented it separately so that you can easily integrate it with your project, whether or not you are using python or any other languages.
 
 
