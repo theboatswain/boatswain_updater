@@ -58,7 +58,47 @@ And also put this line into your *requirements.txt* `boatswain_updater==1.1.3`
 You can also take a look at BAT integration [here](https://github.com/theboatswain/boatswain/blob/master/boatswain/main.py#L74-L79) as reference.
 
 ### For non-python application
-If your project is not using python, or incase you want to make things separately, you can also use the standalone version of Boatswain Auto Updater, which is implemented [here](https://github.com/theboatswain/boatswain_updater/blob/master/boatswain_updater/standalone.py). We have the [prebuilt versions of BAT standalone](https://github.com/theboatswain/boatswain_updater/releases), so, you just need to put it into your project and call it from your application. You can see the example of how it works in [https://github.com/theboatswain/updater_example](https://github.com/theboatswain/updater_example). Alternatively, you can also build BAT standalone from source.
+If your project is not using python, or incase you want to make things separately, you can also use the standalone version of Boatswain Auto Updater, which is implemented [here](https://github.com/theboatswain/boatswain_updater/blob/master/boatswain_updater/standalone.py). The prebuilt versions of BAT standalone for each of the platforms can be downloaded from [the releases page](https://github.com/theboatswain/boatswain_updater/releases)
+
+> Alternatively, you can also build BAT standalone from source.
+
+There are two files inside each of the prebuilt releases, including **AutoUpdater** and **update.json**. You should modify the **update.json** file according to your project.
+
+```json
+{  
+  "Name": "<project_name>",  
+  "Version": "<version>",  
+  "Icon": "<your_icon>",  
+  "Repo": "<your github repo>"  
+}
+```
+Once modified, you can copy these two files into your application's root folder. Now, from your application, you just need to call it to perform the updating procedure.
+
+> Note: For MacOS, you can place the files into *Contents/Resources* folder
+
+For checking new version of your application (in background, for example):
+
+`path/to/AutoUpdater --checking-mode=True`
+
+This command will return to you an output as json format, with the following information:
+```json
+{
+  "has_release": true,
+  "last_release": {
+    "version": "1.0.0",
+    "changelog": "This is the description of this updating",
+    "download_url": "https://github.com/theboatswain/updater_example/releases/download/1.0.0/UpdaterExample-macOS-1.0.0.zip",
+    "download_size": 25613160
+  }
+}
+```
+Although, it will give you a lot of informations regarding your newly version. But you just need to focus on the *"has_release"* attribute. Since it indicates that you have got a new version, and so you can call the AutoUpdater for asking user to update it.
+
+`path/to/AutoUpdater`
+
+This command will launch the Updater dialog and showing the new version to user, asking for updating.
+
+You can see a simple example of how it works in [https://github.com/theboatswain/updater_example](https://github.com/theboatswain/updater_example)
   
 ## Documentation  
 BAT's documentation, user guide and other informations can be found at [https://github.com/theboatswain/boatswain_updater/wiki](https://github.com/theboatswain/boatswain_updater/wiki)  
